@@ -1,0 +1,14 @@
+-- create a store database
+CREATE TABLE store (id INTEGER PRIMARY KEY, clothing TEXT, price INTEGER, size TEXT, quantity INTEGER);
+
+INSERT INTO store VALUES (1, "tank top", 10, "medium", 4);
+INSERT INTO store VALUES (2, "jeans", 20, "six", 3);
+INSERT INTO store VALUES (3, "jacket", 30, "large", 3);
+INSERT INTO store VALUES (4, "shoes", 40, "eight", 3);
+INSERT INTO store VALUES (5, "sunglasses", 15, "no size", 2);
+
+-- display the database ordered by price
+SELECT * FROM store ORDER BY price;
+
+-- what is the total price of all items in the store?
+SELECT SUM(price) FROM store; 
