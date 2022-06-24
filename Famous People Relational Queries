@@ -1,0 +1,55 @@
+/* Create table about the people and what they do here */
+
+CREATE TABLE famouspeople
+    (id INTEGER PRIMARY KEY,
+    name TEXT);
+
+INSERT INTO famouspeople VALUES (1, "Rihanna");
+INSERT INTO famouspeople VALUES (2, "Asap Rocky");
+INSERT INTO famouspeople VALUES (3, "Ariana Grande");
+INSERT INTO famouspeople VALUES (4, "Megan Thee Stallion");
+INSERT INTO famouspeople VALUES (5, "Doja Cat");
+INSERT INTO famouspeople VALUES (6, "Nicki Minaj");
+
+CREATE TABLE home
+    (id INTEGER PRIMARY KEY,
+    person_id INTEGER,
+    home TEXT);
+    
+INSERT INTO home VALUES (1, 1, "Barabdos");
+INSERT INTO home VALUES (2, 2, "Harlem");
+INSERT INTO home VALUES (3, 3, "Boca Raton");
+INSERT INTO home VALUES (4, 4, "San Antonio");
+INSERT INTO home VALUES (5, 5, "Los Angeles");
+
+CREATE TABLE songs
+    (id INTEGER PRIMARY KEY,
+    singer_id1 INTEGER,
+    singer_id2 INTEGER,
+    singer_id3 INTEGER,
+    name TEXT);
+
+INSERT INTO songs VALUES (1, 1, 0, 0, "Diamonds");
+INSERT INTO songs VALUES (2, 3, 0, 0, "34+35");
+INSERT INTO songs VALUES (3, 0, 4, 0, "34+35");
+INSERT INTO songs VALUES (4, 0, 0, 5, "34+35");
+INSERT INTO songs VALUES (5, 2, 0, 0, "Everyday");
+INSERT INTO songs VALUES (6, 6, 0, 0, "Fly");
+INSERT INTO songs VALUES (7, 0, 1, 0, "Fly");
+INSERT INTO songs VALUES (8, 3, 0, 0, "Be Alright"); 
+
+/* Where are the artists from? */
+
+SELECT famouspeople.name, home.home FROM famouspeople
+    LEFT OUTER JOIN home
+    ON famouspeople.id = home.id;
+
+/* What songs did they write together? */
+
+SELECT songs.name AS song_name, a.name AS singer_1, b.name AS singer_2, c.name AS singer_3 FROM songs
+    LEFT OUTER JOIN famouspeople a
+    ON songs.singer_id1 = a.id
+    LEFT OUTER JOIN famouspeople b
+    ON songs.singer_id2 = b.id
+    LEFT OUTER JOIN famouspeople c
+    ON songs.singer_id3 = c.id
