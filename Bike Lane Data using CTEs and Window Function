@@ -1,0 +1,27 @@
+-- THE FOLLOWING CODE USES A CTE(COMMON TABLE EXPRESSION) TO AVERAGE THE SAFETY RATING OF EACH BIKE LANE, AND THEN SELECT ONLY THE STREETS WITH
+A RATING OF 4 OR ABOVE--
+
+  -- THE CODE BELOW THIS LINE IS THE CTE -- 
+WITH safety_average_cte AS (
+SELECT street, AVG(safetyrating) as 'rating'
+FROM citybikelanes
+GROUP BY street)
+
+  -- THE CODE BELOW THIS LINE IS A SQL QUERY THAT SELECTS FROM THE CTE --
+SELECT 
+street,
+rating,
+'safe lane' as 'label'
+FROM safety_average_cte
+WHERE rating >=4
+
+-- THE FOLLOWING CODE USES A WINDOW FUNCTION TO AVERAGE THE TWO ROWS OF SAFETY RATINGS OF EACH STREET INTO A NEW COLUMN,  AND A CASE FUNCTION
+TO LABEL EACH STREET WITH RECOMMENDATIONS--
+
+SELECT street, safetyrating,
+AVG(safetyrating) OVER (PARTITION BY street) as "Average_safety_rating",
+CASE WHEN AVG(safetyrating) OVER (PARTITION BY safetyrating) >=4 THEN "Leave As-Is"
+    WHEN AVG(safetyrating) OVER (PARTITION BY safetyrating) <2.5 THEN "Remove"
+    ELSE "Improvements Needed"
+    END AS "Recommendation"
+FROM CityBikeLanes
