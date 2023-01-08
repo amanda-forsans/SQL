@@ -1,0 +1,30 @@
+- This is SQL code I have used previously on the job to extract crash data from the TIMS (Transportation Injury Mapping System) - 
+
+- The code below aggregates the Location, Conditions and Injury Level columns to one table so that the information needed for each crash, is all located
+in one place - 
+
+SELECT *
+FROM (([Collision Table] AS CT LEFT JOIN [Injury Table] AS IT ON CT.[Accident Number] = IT.[Accident Number]) 
+LEFT JOIN [Conditions Table] AS ConT ON CT.[Accident Number] = ConT.[Accident Number]) 
+LEFT JOIN [Location Table] AS LT ON CT.[Accident Number] = LT.[Accident Number];
+
+- The code below combines the Collision data table created above with the Party table; however, the Party table often contains more than one 
+row per collision (meaning there was more than 1 person invovled in a crash); we will need to condense this - 
+
+SELECT *
+FROM Collision_Combined AS CC LEFT JOIN [Party table] AS PT ON CC.[CT.Accident Number] = PT.[Accident Number];
+
+- The code below combines the information for Party Number 1 and Party Number 2 for each collision into one row - 
+
+SELECT *
+FROM (SELECT DISTINCT CT.[Accident Number], PT.[Party Number], PT.[Party Type], PT.[Party Age], PT.[Movement Preceding Collision], 
+PT.[Direction of Travel], PT.[Associated Cause - Factor 1], PT.[Party Sobriety 1] FROM Party_Collision_Join 
+WHERE PT.[Party Number]=1)  AS PN1 LEFT JOIN (SELECT DISTINCT CT.[Accident Number], PT.[Party Number], PT.[Party Type], PT.[Party Age], 
+PT.[Movement Preceding Collision], PT.[Direction of Travel], PT.[Associated Cause - Factor 1], 
+PT.[Party Sobriety 1] FROM Party_Collision_Join WHERE PT.[Party Number]=2)  AS PN2 ON PN1.CT.[Accident Number]=PN2.CT.[Accident Number];
+
+- The code below combines the Collision data table with the Party Level condenses table to create the output table desired for 
+further data visualization - 
+
+SELECT *
+FROM Collision_Combined AS CC LEFT JOIN Party_Mvmt_Direction AS PMD ON CC.CT.[Accident Number] = PMD.PN1.[Accident Number];
